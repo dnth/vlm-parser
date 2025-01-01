@@ -2,7 +2,7 @@
 Extract information from your images using VLM.
 
 ## Installation
-Install `uv`.
+Install [`uv`](https://docs.astral.sh/uv/).
 
 Next, create a virtual environment and install the dependencies.
 
@@ -29,6 +29,7 @@ python -m spacy download en_core_web_sm
 ```
 
 ## Usage
+Run the Gradio app.
 
 ```bash
 python scripts/app.py
