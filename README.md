@@ -4,9 +4,10 @@ Extract visual information from your images using VLM.
 Input an image and you get the following information extracted from the image:
 
 1. Detailed image caption.
-2. Bounding boxes of detected objects.
-3. Captions of detected objects.
-4. Bounding boxes of zero-shot detected objects.
+2. Image tags.
+3. Bounding boxes of detected objects.
+4. Captions of detected objects.
+5. Bounding boxes of zero-shot detected objects.
 
 ## Installation
 Install [`uv`](https://docs.astral.sh/uv/).

@@ -140,9 +140,17 @@ def process_image(image_path):
     # Plot zero shot detection
     image_zsd = plot_zsd(image_path, zsd)
 
-    extracted_info = f"Caption: {detailed_caption}\n\nNouns: {nouns}, \n\nBounding Boxes: {od_boxes}, \n\nDense Region Caption: {drc}, \n\nZero Shot Detection: {zsd}"
-
-    return image_od, image_drc, image_zsd, extracted_info
+    # Return individual components instead of combined string
+    return (
+        image_od,
+        image_drc,
+        image_zsd,
+        detailed_caption,  # Caption
+        ", ".join(nouns),  # Tags
+        str(od_boxes),  # Bounding Boxes
+        str(drc),  # Dense Region Caption
+        zsd,  # Zero Shot Detection
+    )
 
 
 # Update the Gradio interface
@@ -153,7 +161,11 @@ interface = gr.Interface(
         gr.Image(label="Object Detection"),
         gr.Image(label="Dense Region Caption"),
         gr.Image(label="Zero Shot Detection"),
-        gr.Textbox(label="Extracted Information"),
+        gr.Textbox(label="Detailed Caption", lines=3),
+        gr.Textbox(label="Tags", lines=2),
+        gr.Textbox(label="Bounding Boxes", lines=4),
+        gr.Textbox(label="Dense Region Caption", lines=4),
+        gr.Textbox(label="Zero Shot Detection", lines=4),
     ],
     title="Extract visual information from image",
     description="Upload an image",
