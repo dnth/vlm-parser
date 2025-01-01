@@ -1,7 +1,7 @@
 # vlm-parser
 Extract visual information from your images using VLM.
 
-Input an image and you get the following information:
+Input an image and you get the following information extracted from the image:
 
 1. Detailed image caption.
 2. Bounding boxes of detected objects.
