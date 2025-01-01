@@ -1,6 +1,33 @@
 # vlm-parser
 Extract information from your images using VLM.
 
+## Installation
+Install `uv`.
+
+Next, create a virtual environment and install the dependencies.
+
+```bash
+uv venv
+```
+
+Activate the virtual environment.
+
+```bash
+source .venv/bin/activate
+```
+
+Then install the dependencies.
+
+```bash
+uv sync
+```
+
+Download the spacy English model.
+
+```bash
+python -m spacy download en_core_web_sm
+```
+
 ## Usage
 
 ```bash
