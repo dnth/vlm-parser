@@ -155,8 +155,8 @@ interface = gr.Interface(
         gr.Image(label="Zero Shot Detection"),
         gr.Textbox(label="Extracted Information"),
     ],
-    title="Extract information from image",
-    description="Upload an image and get extracted information with detected objects",
+    title="Extract visual information from image",
+    description="Upload an image",
 )
 
 # Launch the app
