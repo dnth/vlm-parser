@@ -1,5 +1,5 @@
 # vlm-parser
-Extract information from your images using VLM.
+Extract visual information from your images using VLM.
 
 ## Installation
 Install [`uv`](https://docs.astral.sh/uv/).
