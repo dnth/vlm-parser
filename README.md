@@ -1,6 +1,13 @@
 # vlm-parser
 Extract visual information from your images using VLM.
 
+Input an image and you get the following information:
+
+1. Detailed image caption.
+2. Bounding boxes of detected objects.
+3. Captions of detected objects.
+4. Bounding boxes of zero-shot detected objects.
+
 ## Installation
 Install [`uv`](https://docs.astral.sh/uv/).
 
