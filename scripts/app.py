@@ -95,17 +95,19 @@ def process_image(image_path):
         image_path, text=f"<CAPTION_TO_PHRASE_GROUNDING>{nouns_string}"
     ).text
 
-    # Load and process the image
+    # Region proposal
+    rp = model.infer(image_path, text="<REGION_PROPOSAL>").text
+
     image = cv2.imread(image_path)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # Convert to RGB for Gradio
 
-    # copy to a new image
     image_od = image.copy()
     image_drc = image.copy()
+    image_rp = image.copy()
 
-    # Generate colors for each detection type
     od_colors = get_rainbow_colors(len(od_boxes["bboxes"]))
     drc_colors = get_rainbow_colors(len(drc["bboxes"]))
+    rp_colors = get_rainbow_colors(len(rp["bboxes"]))
 
     # Draw bounding boxes and labels for object detection
     for idx, (bbox, label) in enumerate(zip(od_boxes["bboxes"], od_boxes["labels"])):
@@ -140,16 +142,32 @@ def process_image(image_path):
     # Plot zero shot detection
     image_zsd = plot_zsd(image_path, zsd)
 
-    # Return individual components instead of combined string
+    # Plot region proposal
+    for idx, (bbox, label) in enumerate(zip(rp["bboxes"], rp["labels"])):
+        x1, y1, x2, y2 = map(int, bbox)
+        color = rp_colors[idx]
+        cv2.rectangle(image_rp, (x1, y1), (x2, y2), color, 2)
+        cv2.putText(
+            image_rp,
+            label,
+            (x1, y1 - 10),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.9,
+            color,
+            2,
+        )
+
     return (
         image_od,
         image_drc,
         image_zsd,
+        image_rp,
         detailed_caption,  # Caption
         ", ".join(nouns),  # Tags
         str(od_boxes),  # Bounding Boxes
         str(drc),  # Dense Region Caption
         zsd,  # Zero Shot Detection
+        str(rp),  # Region Proposal
     )
 
 
@@ -161,11 +179,13 @@ interface = gr.Interface(
         gr.Image(label="Object Detection"),
         gr.Image(label="Dense Region Caption"),
         gr.Image(label="Zero Shot Detection"),
+        gr.Image(label="Region Proposal"),
         gr.Textbox(label="Detailed Caption", lines=3),
         gr.Textbox(label="Tags", lines=2),
         gr.Textbox(label="Bounding Boxes", lines=4),
         gr.Textbox(label="Dense Region Caption", lines=4),
         gr.Textbox(label="Zero Shot Detection", lines=4),
+        gr.Textbox(label="Region Proposal", lines=4),
     ],
     title="Extract visual information from image",
     description="Upload an image",
