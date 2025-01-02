@@ -74,6 +74,18 @@ def get_rainbow_colors(num_detections):
     return [tuple(int(c * 255) for c in color[:3]) for color in colors]
 
 
+def get_class_colors(class_labels):
+    """Helper function to generate consistent colors for each unique class"""
+    unique_classes = list(set(class_labels))
+    colors = plt.cm.rainbow(np.linspace(0, 1, len(unique_classes)))
+    # Create a mapping of class names to colors
+    color_map = {
+        class_name: tuple(int(c * 255) for c in colors[i][:3])
+        for i, class_name in enumerate(unique_classes)
+    }
+    return color_map
+
+
 def process_image(image_path):
     model = load_model()
     detailed_caption = model.infer(image_path, text="<MORE_DETAILED_CAPTION>").text
@@ -105,14 +117,15 @@ def process_image(image_path):
     image_drc = image.copy()
     image_rp = image.copy()
 
-    od_colors = get_rainbow_colors(len(od_boxes["bboxes"]))
-    drc_colors = get_rainbow_colors(len(drc["bboxes"]))
-    rp_colors = get_rainbow_colors(len(rp["bboxes"]))
+    # Generate color mappings for each detection type
+    od_color_map = get_class_colors(od_boxes["labels"])
+    drc_color_map = get_class_colors(drc["labels"])
+    rp_color_map = get_class_colors(rp["labels"])
 
     # Draw bounding boxes and labels for object detection
-    for idx, (bbox, label) in enumerate(zip(od_boxes["bboxes"], od_boxes["labels"])):
+    for bbox, label in zip(od_boxes["bboxes"], od_boxes["labels"]):
         x1, y1, x2, y2 = map(int, bbox)
-        color = od_colors[idx]
+        color = od_color_map[label]
         cv2.rectangle(image_od, (x1, y1), (x2, y2), color, 2)
         cv2.putText(
             image_od,
@@ -125,9 +138,9 @@ def process_image(image_path):
         )
 
     # Draw bounding boxes and labels for dense region caption
-    for idx, (bbox, label) in enumerate(zip(drc["bboxes"], drc["labels"])):
+    for bbox, label in zip(drc["bboxes"], drc["labels"]):
         x1, y1, x2, y2 = map(int, bbox)
-        color = drc_colors[idx]
+        color = drc_color_map[label]
         cv2.rectangle(image_drc, (x1, y1), (x2, y2), color, 2)
         cv2.putText(
             image_drc,
@@ -143,9 +156,9 @@ def process_image(image_path):
     image_zsd = plot_zsd(image_path, zsd)
 
     # Plot region proposal
-    for idx, (bbox, label) in enumerate(zip(rp["bboxes"], rp["labels"])):
+    for bbox, label in zip(rp["bboxes"], rp["labels"]):
         x1, y1, x2, y2 = map(int, bbox)
-        color = rp_colors[idx]
+        color = rp_color_map[label]
         cv2.rectangle(image_rp, (x1, y1), (x2, y2), color, 2)
         cv2.putText(
             image_rp,
